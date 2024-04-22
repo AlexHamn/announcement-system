@@ -2,20 +2,11 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1>type the announcement</h1>
-  <form>
-    <div class="form-group">
-      <label for="category">choose the category</label>
-      <select class="form-control" id="category" name="category">
-        <option value="">Select a category</option>
-        <!-- Add your category options here -->
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="message">enter specific message</label>
-      <textarea class="form-control" id="message" name="message" rows="5"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">enter</button>
-  </form>
+  <h1>Choose a category</h1>
+  <ul>
+    {% for category in categories %}
+    <li><a href="{% url 'subcategory' category.id %}">{{ category.name }}</a></li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}

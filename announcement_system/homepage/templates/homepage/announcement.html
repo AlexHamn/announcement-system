@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1>{{ subcategory.name }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% for variable in subcategory.template|cut:"["|cut:"]"|split:" " %}
+    {% if "[" in variable and "]" in variable %}
+    <div class="form-group">
+      <label for="{{ variable|cut:"["|cut:"]" }}">{{ variable|cut:"["|cut:"]" }}</label>
+      <input type="text" class="form-control" id="{{ variable|cut:"["|cut:"]" }}" name="{{ variable|cut:"["|cut:"]" }}" required>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Preview</button>
+  </form>
+</div>
+{% endblock %}

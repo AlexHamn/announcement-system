@@ -21,7 +21,10 @@ def announcement(request, subcategory_id):
                 message = message.replace(f'[{key}]', value)
         request.session['message'] = message
         return redirect('confirmation')
-    return render(request, 'homepage/announcement.html', {'subcategory': subcategory})
+    
+    variables = [var.strip('[]') for var in subcategory.template.split() if '[' in var and ']' in var]
+    context = {'subcategory': subcategory, 'variables': variables}
+    return render(request, 'homepage/announcement.html', context)
 
 def confirmation(request):
     message = request.session.get('message', '')

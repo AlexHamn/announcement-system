@@ -5,13 +5,11 @@
   <h1>{{ subcategory.name }}</h1>
   <form method="post">
     {% csrf_token %}
-    {% for variable in subcategory.template|cut:"["|cut:"]"|split:" " %}
-    {% if "[" in variable and "]" in variable %}
+    {% for variable in variables %}
     <div class="form-group">
-      <label for="{{ variable|cut:"["|cut:"]" }}">{{ variable|cut:"["|cut:"]" }}</label>
-      <input type="text" class="form-control" id="{{ variable|cut:"["|cut:"]" }}" name="{{ variable|cut:"["|cut:"]" }}" required>
+      <label for="{{ variable }}">{{ variable }}</label>
+      <input type="text" class="form-control" id="{{ variable }}" name="{{ variable }}" required>
     </div>
-    {% endif %}
     {% endfor %}
     <button type="submit" class="btn btn-primary">Preview</button>
   </form>

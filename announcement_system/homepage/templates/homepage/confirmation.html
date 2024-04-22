@@ -2,12 +2,21 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1>Confirmation</h1>
-  <p>{{ message }}</p>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-primary" name="confirm">Confirm</button>
-    <button type="submit" class="btn btn-secondary" name="cancel">Cancel</button>
-  </form>
+    <h1>Confirmation</h1>
+    
+    <p>Original Message:</p>
+    <pre>{{ message }}</pre>
+    
+    <p>Russian Translation:</p>
+    <pre>{{ message_ru }}</pre>
+    
+    <p>Kyrgyz Translation:</p>
+    <pre>{{ message_kg }}</pre>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" name="confirm">Confirm</button>
+        <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
+    </form>
 </div>
 {% endblock %}

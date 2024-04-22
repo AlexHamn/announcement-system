@@ -12,6 +12,8 @@ class Subcategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     template = models.TextField()
-
+    template_ru = models.TextField()
+    template_kg = models.TextField()
+    
     def __str__(self):
         return self.name

@@ -16,8 +16,20 @@ class Subcategory(models.Model):
     template_ru = models.TextField()
     template_kg = models.TextField()
     flight_number = models.CharField(
-        max_length=10,
+        max_length=7,
         validators=[RegexValidator(r'^[A-Z]{2,3}\d{1,4}$', 'Invalid flight number format')],
+        blank=True,
+        null=True,
+    )
+    origin = models.CharField(
+        max_length=3,
+        validators=[RegexValidator(r'^[A-Z]{3}$', 'Invalid origin format')],
+        blank=True,
+        null=True,
+    )
+    destination = models.CharField(
+        max_length=3,
+        validators=[RegexValidator(r'^[A-Z]{3}$', 'Invalid destination format')],
         blank=True,
         null=True,
     )

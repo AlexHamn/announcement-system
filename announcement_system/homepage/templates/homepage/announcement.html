@@ -11,6 +11,16 @@
             <label for="flight_number">Flight Number</label>
             <input type="text" class="form-control" id="flight_number" name="flight_number" pattern="[A-Z]{2,3}\d{1,4}" title="Please enter a valid flight number (e.g., AB1234)" required>
         </div>
+
+        <div class="form-group">
+            <label for="origin">Origin</label>
+            <input type="text" class="form-control" id="origin" name="origin" pattern="[A-Z]{3}" title="Please enter a valid origin (e.g., ABC)" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="destination">Destination</label>
+            <input type="text" class="form-control" id="destination" name="destination" pattern="[A-Z]{3}" title="Please enter a valid destination (e.g., XYZ)" required>
+        </div>
         
         {% for variable in variables %}
         <div class="form-group">

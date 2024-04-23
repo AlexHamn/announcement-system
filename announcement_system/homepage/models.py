@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 
 # Create your models here.
@@ -14,6 +15,13 @@ class Subcategory(models.Model):
     template = models.TextField()
     template_ru = models.TextField()
     template_kg = models.TextField()
+    flight_number = models.CharField(
+        max_length=10,
+        validators=[RegexValidator(r'^[A-Z]{2,3}\d{1,4}$', 'Invalid flight number format')],
+        blank=True,
+        null=True,
+    )
+    
     
     def __str__(self):
         return self.name

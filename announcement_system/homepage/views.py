@@ -1,6 +1,4 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from urllib.parse import urlencode
 from .models import Category, Subcategory
 
 import re
@@ -20,16 +18,26 @@ def announcement(request, subcategory_id):
     subcategory = Subcategory.objects.get(id=subcategory_id)
     
     if request.method == 'POST':
+        flight_number = request.POST.get('flight_number', '')
+        if not re.match(r'^[A-Z]{2,3}\d{1,4}$', flight_number):
+            # Handle invalid flight number format
+            return render(request, 'homepage/announcement.html', {'subcategory': subcategory, 'error': 'Invalid flight number format'})
+        
         message = subcategory.template
         message_ru = subcategory.template_ru
         message_kg = subcategory.template_kg
         
         for key, value in request.POST.items():
-            if key != 'csrfmiddlewaretoken':
+            if key != 'csrfmiddlewaretoken' and key != 'flight_number':
                 placeholder = f'[{key}]'
                 message = message.replace(placeholder, value)
                 message_ru = message_ru.replace(placeholder, value)
                 message_kg = message_kg.replace(placeholder, value)
+        
+        # Replace flight number placeholder separately
+        message = message.replace('[flight number]', flight_number)
+        message_ru = message_ru.replace('[flight number]', flight_number)
+        message_kg = message_kg.replace('[flight number]', flight_number)
         
         print("Message:", message)
         print("Message (RU):", message_ru)
@@ -44,8 +52,11 @@ def announcement(request, subcategory_id):
     
     placeholder_pattern = re.compile(r'\[.*?\]')
     variables = [var.strip('[]') for var in placeholder_pattern.findall(subcategory.template)]
-    context = {'subcategory': subcategory, 'variables': variables}
     
+    # Remove 'flight number' from the variables list
+    variables = [var for var in variables if var != 'flight number']
+    
+    context = {'subcategory': subcategory, 'variables': variables}
     return render(request, 'homepage/announcement.html', context)
 
 def confirmation(request):
@@ -53,9 +64,9 @@ def confirmation(request):
     message_ru = request.session.get('message_ru', '')
     message_kg = request.session.get('message_kg', '')
     
-    print("Message (from session):", message)
-    print("Message (RU) (from session):", message_ru)
-    print("Message (KG) (from session):", message_kg)
+    #print("Message (from session):", message)
+    #print("Message (RU) (from session):", message_ru)
+    #print("Message (KG) (from session):", message_kg)
     
     if request.method == 'POST':
         if 'confirm' in request.POST:

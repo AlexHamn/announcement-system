@@ -2,16 +2,28 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1>{{ subcategory.name }}</h1>
-  <form method="post">
-    {% csrf_token %}
-    {% for variable in variables %}
-    <div class="form-group">
-      <label for="{{ variable }}">{{ variable }}</label>
-      <input type="text" class="form-control" id="{{ variable }}" name="{{ variable }}" required>
-    </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Preview</button>
-  </form>
+    <h1>{{ subcategory.name }}</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="flight_number">Flight Number</label>
+            <input type="text" class="form-control" id="flight_number" name="flight_number" pattern="[A-Z]{2,3}\d{1,4}" title="Please enter a valid flight number (e.g., AB1234)" required>
+        </div>
+        
+        {% for variable in variables %}
+        <div class="form-group">
+            <label for="{{ variable }}">{{ variable }}</label>
+            <input type="text" class="form-control" id="{{ variable }}" name="{{ variable }}" required>
+        </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn btn-primary">Preview</button>
+    </form>
+    
+    {% if error %}
+    <p class="text-danger">{{ error }}</p>
+    {% endif %}
 </div>
 {% endblock %}

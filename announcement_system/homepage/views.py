@@ -50,14 +50,9 @@ def confirmation(request):
     message_ru = request.session.get('message_ru', '')
     message_kg = request.session.get('message_kg', '')
     
-    print("Message (from session):", message)
-    print("Message (RU) (from session):", message_ru)
-    print("Message (KG) (from session):", message_kg)
-    
     if request.method == 'POST':
         if 'confirm' in request.POST:
-            # Process the confirmed message (e.g., send it to the announcement system)
-            pass
+            return redirect('generate_audio')
         return redirect('index')
     
     return render(request, 'homepage/confirmation.html', {'message': message, 'message_ru': message_ru, 'message_kg': message_kg})

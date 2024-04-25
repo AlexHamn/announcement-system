@@ -1,6 +1,4 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from urllib.parse import urlencode
 from .models import Category, Subcategory
 
 import re
@@ -9,7 +7,8 @@ import re
 
 def index(request):
     categories = Category.objects.all()
-    return render(request, 'homepage/index.html', {'categories': categories})
+    context = {'categories': categories}
+    return render(request, 'homepage/index.html', context)
 
 def subcategory(request, category_id):
     category = Category.objects.get(id=category_id)

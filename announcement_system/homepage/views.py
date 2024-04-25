@@ -17,10 +17,9 @@ def subcategory(request, category_id):
 
 def announcement(request, subcategory_id):
     subcategory = Subcategory.objects.get(id=subcategory_id)
-    
     placeholder_pattern = re.compile(r'\[.*?\]')
     variables = [var.strip('[]') for var in placeholder_pattern.findall(subcategory.template)]
-    
+
     if request.method == 'POST':
         form = AnnouncementForm(request.POST, variables=variables)
         if form.is_valid():

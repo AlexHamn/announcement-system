@@ -1,3 +1,5 @@
+# homepage/views.py
+
 from django.shortcuts import render, redirect
 from .models import Category, Subcategory
 from .forms import AnnouncementForm

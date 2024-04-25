@@ -2,16 +2,12 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h1>{{ subcategory.name }}</h1>
-  <form method="post">
-    {% csrf_token %}
-    {% for variable in variables %}
-    <div class="form-group">
-      <label for="{{ variable }}">{{ variable }}</label>
-      <input type="text" class="form-control" id="{{ variable }}" name="{{ variable }}" required>
-    </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Preview</button>
+    <h1>{{ subcategory.name }}</h1>
+    <p>{{ subcategory.template }}</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Preview</button>
   </form>
 </div>
 {% endblock %}

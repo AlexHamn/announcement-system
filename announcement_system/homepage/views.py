@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Category, Subcategory
-
+from .forms import AnnouncementForm
 import re
 
 # Create your views here.
@@ -18,33 +18,32 @@ def subcategory(request, category_id):
 def announcement(request, subcategory_id):
     subcategory = Subcategory.objects.get(id=subcategory_id)
     
+    placeholder_pattern = re.compile(r'\[.*?\]')
+    variables = [var.strip('[]') for var in placeholder_pattern.findall(subcategory.template)]
+    
     if request.method == 'POST':
-        message = subcategory.template
-        message_ru = subcategory.template_ru
-        message_kg = subcategory.template_kg
-        
-        for key, value in request.POST.items():
-            if key != 'csrfmiddlewaretoken':
+        form = AnnouncementForm(request.POST, variables=variables)
+        if form.is_valid():
+            message = subcategory.template
+            message_ru = subcategory.template_ru
+            message_kg = subcategory.template_kg
+
+            for key, value in form.cleaned_data.items():
                 placeholder = f'[{key}]'
                 message = message.replace(placeholder, value)
                 message_ru = message_ru.replace(placeholder, value)
                 message_kg = message_kg.replace(placeholder, value)
-        
-        print("Message:", message)
-        print("Message (RU):", message_ru)
-        print("Message (KG):", message_kg)
-        
-        request.session['message'] = message
-        request.session['message_ru'] = message_ru
-        request.session['message_kg'] = message_kg
-        request.session.modified = True
-        
-        return redirect('confirmation')
-    
-    placeholder_pattern = re.compile(r'\[.*?\]')
-    variables = [var.strip('[]') for var in placeholder_pattern.findall(subcategory.template)]
-    context = {'subcategory': subcategory, 'variables': variables}
-    
+
+            request.session['message'] = message
+            request.session['message_ru'] = message_ru
+            request.session['message_kg'] = message_kg
+            request.session.modified = True
+
+            return redirect('confirmation')
+    else:
+        form = AnnouncementForm(variables=variables)
+
+    context = {'subcategory': subcategory, 'form': form}
     return render(request, 'homepage/announcement.html', context)
 
 def confirmation(request):

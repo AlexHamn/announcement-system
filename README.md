@@ -141,10 +141,10 @@ The main configuration file is `announcement_system/settings.py`. You can modify
 ![Subcategory page with the predefined announcement and form](./screenshots/subcategories.png)
 *Subcategory page with the predefined announcement and form*
 
-![form](./screenshots/form)
+![form](./screenshots/form.png)
 *Form*
 
-![Confirmation page](./screenshots/confirmation)
+![Confirmation page](./screenshots/confirmation.png)
 *Confirmation page*
 
 ![Page displaying the three audio versions of the announcement](./screenshots/audio.png)

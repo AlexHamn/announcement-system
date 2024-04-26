@@ -135,23 +135,20 @@ The main configuration file is `announcement_system/settings.py`. You can modify
 
 ## Screenshots
 
-[Placeholder for screenshot 1]
+[Homepage with the list of categories](./screenshots/homepage.png)
 *Homepage with the list of categories*
 
-[Placeholder for screenshot 2]
+[Subcategory page with the predefined announcement and form](./screenshots/subcategories.png)
 *Subcategory page with the predefined announcement and form*
 
-[Placeholder for screenshot 3]
+[Confirmation page](confirmation)
 *Confirmation page*
 
-[Placeholder for screenshot 4]
+[Page displaying the three audio versions of the announcement](./screenshots/audio.png)
 *Page displaying the three audio versions of the announcement*
 
-[Placeholder for screenshot 5]
+[Admin interface for managing categories and subcategories](./screenshots/admin.png)
 *Admin interface for managing categories and subcategories*
-
-[Placeholder for screenshot 6]
-*Exported JSON data file*
 
 ## Contributing
 

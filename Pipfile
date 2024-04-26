@@ -9,6 +9,7 @@ transformers = "*"
 torch = "*"
 scipy = "*"
 num2words = "*"
+tzdata = "*"
 
 [dev-packages]
 

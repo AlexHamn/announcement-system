@@ -82,7 +82,7 @@ def convert_to_phonetic(text, language):
     return text
 
 def log_phonetic_conversion(text, language, phonetic_text):
-    with open('phonetic_conversion.log', 'a') as log_file:
+    with open('phonetic_conversion.log', 'a', encoding='utf-8') as log_file:
         log_file.write(f"Input Text: {text}\n")
         log_file.write(f"Language: {language}\n")
         log_file.write(f"Phonetic Text: {phonetic_text}\n")

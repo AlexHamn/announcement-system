@@ -1,0 +1,58 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "Arrival and Departure Announcements"
+        },
+        {
+            "id": 2,
+            "name": "Security and Safety Announcements"
+        },
+        {
+            "id": 3,
+            "name": "Test Category"
+        }
+    ],
+    "subcategories": [
+        {
+            "id": 1,
+            "category_id": 1,
+            "name": "Flight arrival",
+            "template": "      flight [flight_number] from [origin] to [destination], is now arriving at gate [gate_number].",
+            "template_ru": "\u0440\u0435\u0439\u0441 [flight_number] \u0438\u0437 [origin] \u0432 [destination] \u043f\u0440\u0438\u0431\u044b\u0432\u0430\u0435\u0442 \u043d\u0430 \u0433\u0435\u0439\u0442 [gate_number].",
+            "template_kg": "[flight_number] \u0440\u0435\u0439\u0441\u0438 [origin] - [destination], [gate_number]-\u0442\u0430\u0440\u0437\u0434\u0430."
+        },
+        {
+            "id": 2,
+            "category_id": 1,
+            "name": "Final Boarding Call",
+            "template": "final boarding call for flight [flight_number] to [destination]. proceed to gate [gate_number] immediately. gate closes in [time_remaining].",
+            "template_ru": "\u0437\u0430\u043a\u0430\u043d\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u043f\u043e\u0441\u0430\u0434\u043a\u0430 \u043d\u0430 \u0440\u0435\u0439\u0441 [flight_number] \u0432 [destination]. \u043f\u0440\u043e\u0439\u0434\u0438\u0442\u0435 \u043a \u0433\u0435\u0439\u0442\u0443 [gate_number] \u0441\u0435\u0439\u0447\u0430\u0441. \u0433\u0435\u0439\u0442 \u0437\u0430\u043a\u0440\u043e\u0435\u0442\u0441\u044f \u0447\u0435\u0440\u0435\u0437 [time_remaining].",
+            "template_kg": "[flight_number] \u0440\u0435\u0439\u0441\u0438\u043d\u0435 [destination] \u0430\u043a\u044b\u0440\u043a\u044b \u0447\u0430\u043a\u044b\u0440\u044b\u043a. \u0434\u0430\u0440\u043e\u043e [gate_number]-\u0442\u0430\u0440\u0437\u044b\u043d\u0430 \u04e9\u0442\u04af\u04a3\u04af\u0437. \u0442\u0430\u0440\u0437 [time_remaining] \u0438\u0447\u0438\u043d\u0434\u0435 \u0436\u0430\u0431\u044b\u043b\u0430\u0442."
+        },
+        {
+            "id": 3,
+            "category_id": 1,
+            "name": "Flight Delay",
+            "template": "flight [flight_number] to [destination] delayed due to [reason]. new departure time is [new_time].",
+            "template_ru": "\u0440\u0435\u0439\u0441 [flight_number] \u0432 [destination] \u0437\u0430\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u0438\u0437-\u0437\u0430 [reason]. \u043d\u043e\u0432\u043e\u0435 \u0432\u0440\u0435\u043c\u044f \u0432\u044b\u043b\u0435\u0442\u0430 - [new_time].",
+            "template_kg": "[flight_number] \u0440\u0435\u0439\u0441\u0438 [destination] \u0448\u0430\u0430\u0440\u044b\u043d\u0430 [reason] \u0441\u0435\u0431\u0435\u043f\u0442\u0435\u043d \u043a\u0435\u0447\u0438\u043a\u0442\u0438\u0440\u0438\u043b\u0434\u0438. \u0436\u0430\u04a3\u044b \u0447\u044b\u0433\u0443\u0443 \u0443\u0431\u0430\u043a\u0442\u044b\u0441\u044b [new_time]."
+        },
+        {
+            "id": 4,
+            "category_id": 2,
+            "name": "Weapons Prohibited",
+            "template": "firearms and weapons are strictly prohibited in the airport.",
+            "template_ru": "\u043e\u0433\u043d\u0435\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u043e\u0435 \u043e\u0440\u0443\u0436\u0438\u0435 \u0438 \u0434\u0440\u0443\u0433\u0438\u0435 \u0432\u0438\u0434\u044b \u043e\u0440\u0443\u0436\u0438\u044f \u0437\u0430\u043f\u0440\u0435\u0449\u0435\u043d\u044b \u0432 \u0430\u044d\u0440\u043e\u043f\u043e\u0440\u0442\u0443.",
+            "template_kg": "\u0430\u044d\u0440\u043e\u043f\u043e\u0440\u0442 \u0430\u0439\u043c\u0430\u0433\u044b\u043d\u0434\u0430 \u043a\u0443\u0440\u0430\u043b-\u0436\u0430\u0440\u0430\u043a\u0442\u0430\u0440 \u0436\u0430\u043d\u0430 \u0431\u0430\u0448\u043a\u0430 \u043a\u0443\u0440\u0430\u043b\u0434\u0430\u0440 \u043a\u0430\u0442\u0443\u0443 \u0442\u044b\u044e\u0443 \u0441\u0430\u043b\u044b\u043d\u0433\u0430\u043d."
+        },
+        {
+            "id": 5,
+            "category_id": 3,
+            "name": "Test Subcategory",
+            "template": "This is a test category for the flight [flight_number]",
+            "template_ru": "\u042d\u0442\u043e \u0442\u0435\u0441\u0442\u043e\u0432\u0430\u044f \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f \u0434\u043b\u044f \u0440\u0435\u0439\u0441\u0430 [flight_number]",
+            "template_kg": "\u0411\u0443\u043b [flight_number] \u0443\u0447\u0443\u0443 \u04af\u0447\u04af\u043d \u0441\u044b\u043d\u043e\u043e \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f\u0441\u044b"
+        }
+    ]
+}

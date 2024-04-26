@@ -1,3 +1,5 @@
+# populate_data.py
+
 from django.core.management.base import BaseCommand
 from homepage.models import Category, Subcategory
 

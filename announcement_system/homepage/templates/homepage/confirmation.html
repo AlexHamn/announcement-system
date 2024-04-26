@@ -1,3 +1,5 @@
+<!-- templates/homepage/confirmation.html -->
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -15,7 +17,7 @@
     
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary" name="confirm">Confirm</button>
+        <button type="submit" class="btn btn-primary" name="confirm">Generate Audio</button>
         <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

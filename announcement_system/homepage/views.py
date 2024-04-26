@@ -1,15 +1,16 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from urllib.parse import urlencode
-from .models import Category, Subcategory
+# homepage/views.py
 
+from django.shortcuts import render, redirect
+from .models import Category, Subcategory
+from .forms import AnnouncementForm
 import re
 
 # Create your views here.
 
 def index(request):
     categories = Category.objects.all()
-    return render(request, 'homepage/index.html', {'categories': categories})
+    context = {'categories': categories}
+    return render(request, 'homepage/index.html', context)
 
 def subcategory(request, category_id):
     category = Category.objects.get(id=category_id)
@@ -18,34 +19,32 @@ def subcategory(request, category_id):
 
 def announcement(request, subcategory_id):
     subcategory = Subcategory.objects.get(id=subcategory_id)
-    
+    placeholder_pattern = re.compile(r'\[.*?\]')
+    variables = [var.strip('[]') for var in placeholder_pattern.findall(subcategory.template)]
+
     if request.method == 'POST':
-        message = subcategory.template
-        message_ru = subcategory.template_ru
-        message_kg = subcategory.template_kg
-        
-        for key, value in request.POST.items():
-            if key != 'csrfmiddlewaretoken':
+        form = AnnouncementForm(request.POST, variables=variables)
+        if form.is_valid():
+            message = subcategory.template
+            message_ru = subcategory.template_ru
+            message_kg = subcategory.template_kg
+
+            for key, value in form.cleaned_data.items():
                 placeholder = f'[{key}]'
                 message = message.replace(placeholder, value)
                 message_ru = message_ru.replace(placeholder, value)
                 message_kg = message_kg.replace(placeholder, value)
-        
-        print("Message:", message)
-        print("Message (RU):", message_ru)
-        print("Message (KG):", message_kg)
-        
-        request.session['message'] = message
-        request.session['message_ru'] = message_ru
-        request.session['message_kg'] = message_kg
-        request.session.modified = True
-        
-        return redirect('confirmation')
-    
-    placeholder_pattern = re.compile(r'\[.*?\]')
-    variables = [var.strip('[]') for var in placeholder_pattern.findall(subcategory.template)]
-    context = {'subcategory': subcategory, 'variables': variables}
-    
+
+            request.session['message'] = message
+            request.session['message_ru'] = message_ru
+            request.session['message_kg'] = message_kg
+            request.session.modified = True
+
+            return redirect('confirmation')
+    else:
+        form = AnnouncementForm(variables=variables)
+
+    context = {'subcategory': subcategory, 'form': form}
     return render(request, 'homepage/announcement.html', context)
 
 def confirmation(request):
@@ -53,14 +52,9 @@ def confirmation(request):
     message_ru = request.session.get('message_ru', '')
     message_kg = request.session.get('message_kg', '')
     
-    print("Message (from session):", message)
-    print("Message (RU) (from session):", message_ru)
-    print("Message (KG) (from session):", message_kg)
-    
     if request.method == 'POST':
         if 'confirm' in request.POST:
-            # Process the confirmed message (e.g., send it to the announcement system)
-            pass
+            return redirect('generate_audio')
         return redirect('index')
     
     return render(request, 'homepage/confirmation.html', {'message': message, 'message_ru': message_ru, 'message_kg': message_kg})

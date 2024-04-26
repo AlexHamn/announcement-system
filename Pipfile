@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 django = "*"
+transformers = "*"
+torch = "*"
+scipy = "*"
+num2words = "*"
 
 [dev-packages]
 

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c42a67d47741e15e7c6f980230c794eb36fbf0b5a2878f963d073ba50bd564c1"
+            "sha256": "bbd47f863921fb3b9db7a28949e96543060aea399059d83e31eb4d615ccb84c6"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -137,6 +137,12 @@
             "markers": "python_version >= '3.10'",
             "version": "==5.0.4"
         },
+        "docopt": {
+            "hashes": [
+                "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"
+            ],
+            "version": "==0.6.2"
+        },
         "filelock": {
             "hashes": [
                 "sha256:404e5e9253aa60ad457cae1be07c0f0ca90a63931200a47d9b6a6af84fd7b45f",
@@ -257,6 +263,14 @@
             ],
             "markers": "python_version >= '3.10'",
             "version": "==3.3"
+        },
+        "num2words": {
+            "hashes": [
+                "sha256:39e662c663f0a7e15415431ea68eb3dc711b49e3b776d93403e1da0a219ca4ee",
+                "sha256:a3064716fbbf90d75c449450cebfbc73a6a13e63b2531d09bdecc3ab1a2209cf"
+            ],
+            "index": "pypi",
+            "version": "==0.5.13"
         },
         "numpy": {
             "hashes": [

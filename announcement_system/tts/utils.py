@@ -10,6 +10,20 @@ from num2words import num2words
 from pydub import AudioSegment
 import logging
 
+from ffmpeg import probe
+
+from pydub.utils import which
+
+ffmpeg_path = which('ffmpeg')
+ffprobe_path = which('ffprobe')
+
+if ffmpeg_path is None or ffprobe_path is None:
+    raise FileNotFoundError("FFmpeg or FFprobe not found in the system PATH")
+
+# Set the FFmpeg and FFprobe paths as environment variables
+os.environ['FFMPEG_PATH'] = ffmpeg_path
+os.environ['FFPROBE_PATH'] = ffprobe_path
+
 def kyrgyz_num2words(num):
     # Kyrgyz number words
     ones = ['', 'бир', 'эки', 'үч', 'төрт', 'беш', 'алты', 'жети', 'сегиз', 'тогуз']
@@ -112,7 +126,7 @@ def generate_audio(text, language, is_predefined=False):
     output = output.squeeze()
     
     # Use the first 20 characters of the text as the file name
-    file_name = f"{text[:20]}_{language}.wav"
+    file_name = f"{text}_{language}.wav"
     if is_predefined:
         audio_folder = os.path.join(settings.MEDIA_ROOT, settings.PREDEFINED_AUDIO_FOLDER)
     else:
@@ -123,7 +137,9 @@ def generate_audio(text, language, is_predefined=False):
 
     return file_name
 
-def combine_audio_files(template, predefined_files, dynamic_files, language):
+# tts/utils.py
+
+def combine_audio_files(template, predefined_files, dynamic_files, language, placeholders):
     combined_audio = AudioSegment.empty()
     
     # Parse the template and build the audio segments list
@@ -134,11 +150,14 @@ def combine_audio_files(template, predefined_files, dynamic_files, language):
     
     for part in template_parts:
         if part.startswith('['):
-            # Add the corresponding dynamic file
             placeholder = part[1:-1]
-            dynamic_file = next((file for file in dynamic_files if placeholder in file), None)
+            logging.info(f"Placeholder: {placeholder}")
+            logging.info(f"Dynamic files: {dynamic_files}")
+            dynamic_file = next((file for file in dynamic_files if file.startswith(f"{placeholders[placeholder]}_{language}")), None)
+            logging.info(f"Dynamic file: {dynamic_file}")
             if dynamic_file:
                 audio_path = os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER, dynamic_file)
+                logging.info(f"Audio path: {audio_path}")
                 
                 if os.path.exists(audio_path):
                     audio = AudioSegment.from_wav(audio_path)
@@ -152,9 +171,11 @@ def combine_audio_files(template, predefined_files, dynamic_files, language):
             # Add the corresponding predefined file
             if predefined_idx < len(predefined_files):
                 audio_file = predefined_files[predefined_idx]
-                audio_path = os.path.join(settings.MEDIA_ROOT, settings.PREDEFINED_AUDIO_FOLDER, audio_file)
+                audio_path = os.path.join(settings.MEDIA_ROOT, audio_file)
+                logging.info(f"Combining predefined audio file: {audio_path}")
 
                 if os.path.exists(audio_path):
+                    info = probe(audio_path)
                     audio = AudioSegment.from_wav(audio_path)
                     audio_segments.append(audio)
                     predefined_idx += 1
@@ -162,10 +183,16 @@ def combine_audio_files(template, predefined_files, dynamic_files, language):
                     logging.warning(f"Predefined audio file not found: {audio_path}")
     
     # Concatenate the audio segments in the correct order
-    combined_audio = sum(audio_segments)
+    combined_audio = AudioSegment.empty()
+    for segment in audio_segments:
+        combined_audio += segment
 
-    file_name = f"announcement_{language}_combined.wav"
-    file_path = os.path.join(settings.MEDIA_ROOT, file_name)
-    combined_audio.export(file_path, format="wav")
-
-    return file_name
+    if len(combined_audio) > 0:
+        file_name = f"announcement_{language}_combined.wav"
+        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+        combined_audio.export(file_path, format="wav")
+        logging.info(f"Combined audio file generated: {file_path}")
+        return file_name
+    else:
+        logging.warning("No audio segments found to combine.")
+        return None

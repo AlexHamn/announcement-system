@@ -1,23 +1,18 @@
 <!-- announcement_system/tts/templates/tts/audio.html -->
 
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="container mt-5">
     <h1>Announcement Audio</h1>
-    
+
     {% for audio_file in audio_files %}
     <audio id="audio-{{ forloop.counter }}" controls>
-        <source src="{{ MEDIA_URL }}{{ audio_file }}" type="audio/wav">
+        <source src="{{ audio_file }}" type="audio/wav">
         Your browser does not support the audio element.
-    </audio>
-    {% endfor %}
-    
+    </audio> {% endfor %}
+
     <a href="/" class="btn btn-primary mt-3">Back to Home</a>
 </div>
-{% endblock %}
-
-{% block extra_scripts %}
+{% endblock %} {% block extra_scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var audioElements = document.getElementsByTagName('audio');

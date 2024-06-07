@@ -2,6 +2,7 @@
 
 from django import forms
 from django.core.validators import RegexValidator
+from .models import Subcategory
 
 class AnnouncementForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -26,3 +27,10 @@ class AnnouncementForm(forms.Form):
                 required=True,
                 validators=[validator] if validator else []
             )
+
+class SubcategoryForm(forms.ModelForm):
+    predefined_parts = forms.CharField(widget=forms.Textarea, help_text="Enter each predefined part on a new line.")
+
+    class Meta:
+        model = Subcategory
+        fields = ['category', 'name', 'template', 'template_ru', 'template_kg', 'predefined_parts']

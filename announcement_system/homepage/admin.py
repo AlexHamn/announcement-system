@@ -41,6 +41,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class SubcategoryAdmin(admin.ModelAdmin):
     actions = [export_data]
+    
+    def save_model(self, request, obj, form, change):
+        predefined_audio_files = obj.generate_predefined_audio_files()
+        obj.predefined_audio_files = predefined_audio_files
+        super().save_model(request, obj, form, change)
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Subcategory, SubcategoryAdmin)

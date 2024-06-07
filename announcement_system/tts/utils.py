@@ -7,6 +7,8 @@ import torch
 import scipy
 import re
 from num2words import num2words
+from pydub import AudioSegment
+import logging
 
 def kyrgyz_num2words(num):
     # Kyrgyz number words
@@ -59,18 +61,18 @@ def convert_to_phonetic(text, language):
             'W': '  double-you  ', 'X': '  ex  ', 'Y': '  why  ', 'Z': '  zed  '
         },
         'rus': {
-            'А': 'а ', 'Б': 'бэ ', 'В': 'вэ ', 'Г': 'гэ ', 'Д': 'дэ ', 'Е': 'е ', 'Ё': 'ё ',
-            'Ж': 'жэ ', 'З': 'зэ ', 'И': 'и ', 'Й': 'и краткое ', 'К': 'ка ', 'Л': 'эль ',
-            'М': 'эм ', 'Н': 'эн ', 'О': 'о ', 'П': 'пэ ', 'Р': 'эр ', 'С': 'эс ', 'Т': 'тэ ',
-            'У': 'у ', 'Ф ': 'эф ', 'Х': 'ха ', 'Ц': 'цэ ', 'Ч': 'че ', 'Ш': 'ша ', 'Щ': 'ща ',
-            'Ъ': 'твёрдый знак ', 'Ы': 'ы ', 'Ь': 'мягкий знак ', 'Э': 'э ', 'Ю': 'ю ', 'Я': 'я '
+            'A': 'а ', 'B': 'бэ ', 'C': 'цэ ', 'D': 'дэ ', 'E': 'э ', 
+            'F': 'эф ', 'G': 'жэ ', 'H': 'эйч ', 'I': 'и ', 'J': 'джэй ',
+            'K': 'кэй ', 'L': 'эль ', 'M': 'эм ', 'N': 'эн ', 'O': 'о ',
+            'P': 'пэ ', 'Q': 'кью ', 'R': 'ар ', 'S': 'эс ', 'T': 'тэ ',
+            'U': 'ю ', 'V': 'вэ ', 'W': 'дабльвэ ', 'X': 'экс ', 'Y': 'иай ', 'Z': 'зэд '
         },
         'kir': {
-            'А': 'а ', 'Б': 'бе ', 'В': 'ве ', 'Г': 'ге ', 'Д': 'де ', 'Е': 'е ', 'Ё': 'ё ',
-            'Ж': 'же ', 'З': 'зе ', 'И': 'и ', 'Й': 'й ', 'К': 'ка ', 'Л': 'эль ', 'М': 'эм ',
-            'Н': 'эн ', 'Ң': 'ң ', 'О': 'о ', 'Ө': 'өү', 'П': 'пе', 'Р': 'эр', 'С': 'эс', 'Т': 'те',
-            'У': 'у', 'Ү': 'үү', 'Ф': 'эф ', 'Х': 'ха', 'Ц': 'це', 'Ч': 'че', 'Ш': 'ше', 'Щ': 'ше',
-            'Ъ': 'ъ', 'Ы': 'ы', 'Ь': 'ь ', 'Э': 'э', 'Ю': 'ю', 'Я': 'я'
+            'A': 'а ', 'B': 'бэ ', 'C': 'цэ ', 'D': 'дэ ', 'E': 'е ',
+            'F': 'эф ', 'G': 'гэ ', 'H': 'ха ', 'I': 'и ', 'J': 'жэ ',
+            'K': 'ка ', 'L': 'эл ', 'M': 'эм ', 'N': 'эн ', 'O': 'о ',
+            'P': 'пэ ', 'Q': 'кү ', 'R': 'эр ', 'S': 'эс ', 'T': 'тэ ',
+            'U': 'ү ', 'V': 'вэ ', 'W': 'дабл вэ ', 'X': 'экс ', 'Y': 'йэ ', 'Z': 'зэд '
         }
     }
 
@@ -88,7 +90,9 @@ def log_phonetic_conversion(text, language, phonetic_text):
         log_file.write(f"Phonetic Text: {phonetic_text}\n")
         log_file.write("-" * 50 + "\n")
 
-def generate_audio(text, language):
+# tts/utils.py
+
+def generate_audio(text, language, is_predefined=False):
     phonetic_text = convert_to_phonetic(text, language)
     log_phonetic_conversion(text, language, phonetic_text)
 
@@ -100,14 +104,68 @@ def generate_audio(text, language):
     tokenizer = AutoTokenizer.from_pretrained(f"facebook/mms-tts-{language}")
 
     inputs = tokenizer(phonetic_text, return_tensors="pt")
+    inputs = {k: v.to(torch.long) for k, v in inputs.items()}  # Convert input tensors to Long
 
     with torch.no_grad():
         output = model(**inputs).waveform
 
     output = output.squeeze()
-
-    file_name = f"announcement_{language}.wav"
-    file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+    
+    # Use the first 20 characters of the text as the file name
+    file_name = f"{text[:20]}_{language}.wav"
+    if is_predefined:
+        audio_folder = os.path.join(settings.MEDIA_ROOT, settings.PREDEFINED_AUDIO_FOLDER)
+    else:
+        audio_folder = os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER)
+    os.makedirs(audio_folder, exist_ok=True)  # Create the directory if it doesn't exist
+    file_path = os.path.join(audio_folder, file_name)
     scipy.io.wavfile.write(file_path, rate=model.config.sampling_rate, data=output.float().numpy())
+
+    return file_name
+
+def combine_audio_files(template, predefined_files, dynamic_files, language):
+    combined_audio = AudioSegment.empty()
+    
+    # Parse the template and build the audio segments list
+    audio_segments = []
+    template_parts = re.split(r'(\[[^\]]+\])', template)
+    predefined_idx = 0
+    dynamic_idx = 0
+    
+    for part in template_parts:
+        if part.startswith('['):
+            # Add the corresponding dynamic file
+            placeholder = part[1:-1]
+            dynamic_file = next((file for file in dynamic_files if placeholder in file), None)
+            if dynamic_file:
+                audio_path = os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER, dynamic_file)
+                
+                if os.path.exists(audio_path):
+                    audio = AudioSegment.from_wav(audio_path)
+                    audio_segments.append(audio)
+                    dynamic_idx += 1
+                else:
+                    logging.warning(f"Dynamic audio file not found: {audio_path}")
+            else:
+                logging.warning(f"No dynamic audio file found for placeholder: {placeholder}")
+        else:
+            # Add the corresponding predefined file
+            if predefined_idx < len(predefined_files):
+                audio_file = predefined_files[predefined_idx]
+                audio_path = os.path.join(settings.MEDIA_ROOT, settings.PREDEFINED_AUDIO_FOLDER, audio_file)
+
+                if os.path.exists(audio_path):
+                    audio = AudioSegment.from_wav(audio_path)
+                    audio_segments.append(audio)
+                    predefined_idx += 1
+                else:
+                    logging.warning(f"Predefined audio file not found: {audio_path}")
+    
+    # Concatenate the audio segments in the correct order
+    combined_audio = sum(audio_segments)
+
+    file_name = f"announcement_{language}_combined.wav"
+    file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+    combined_audio.export(file_path, format="wav")
 
     return file_name

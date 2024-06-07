@@ -2,23 +2,41 @@
 
 from django.shortcuts import render
 from django.conf import settings
-from .utils import generate_audio
+from .utils import generate_audio, combine_audio_files
+from homepage.models import Subcategory
+import logging
 
 def generate_announcement_audio(request):
-    message = request.session.get('message', '')
-    message_ru = request.session.get('message_ru', '')
-    message_kg = request.session.get('message_kg', '')
+    subcategory_id = request.session.get('subcategory_id')
+    subcategory = Subcategory.objects.get(id=subcategory_id)
 
-    audio_files = []
-    audio_files.append(generate_audio(message, 'eng'))
-    audio_files.append(generate_audio(message_ru, 'rus'))
-    audio_files.append(generate_audio(message_kg, 'kir'))
+    predefined_audio_files = subcategory.predefined_audio_files
+
+    # Generate audio files for the dynamic parts
+    dynamic_audio_files = []
+    for key, value in request.session.items():
+        if key.startswith('placeholder_'):
+            placeholder = key.replace('placeholder_', '')
+            for lang in ['eng', 'rus', 'kir']:
+                logging.info(f"Generating audio for placeholder: {placeholder}, value: {value}, language: {lang}")
+                dynamic_audio_file = generate_audio(value, lang, is_predefined=False)
+                if dynamic_audio_file:
+                    dynamic_audio_files.append(dynamic_audio_file)
+                    logging.info(f"Generated dynamic audio file: {dynamic_audio_file}")
+                    logging.info(f"Dynamic audio file path: {os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER, dynamic_audio_file)}")
+
+    # ...
+
+    combined_audio_files = []
+    for lang, template in [('eng', subcategory.template), ('rus', subcategory.template_ru), ('kir', subcategory.template_kg)]:
+        predefined_files = [file for file in predefined_audio_files if file.endswith(f'_{lang}.wav')]
+        dynamic_files = [file for file in dynamic_audio_files if file.endswith(f'_{lang}.wav')]
+        combined_audio = combine_audio_files(template, predefined_files, dynamic_files, lang)
+        if combined_audio:
+            combined_audio_files.append(combined_audio)
 
     context = {
-        'audio_files': audio_files,
+        'audio_files': combined_audio_files,
         'MEDIA_URL': settings.MEDIA_URL,
     }
     return render(request, 'tts/audio.html', context)
-
-def test_view(request):
-    return render(request, 'tts/test.html')

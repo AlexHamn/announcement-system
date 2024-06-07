@@ -33,7 +33,8 @@ ALLOWED_HOSTS = []
 
 # Media files (user-uploaded files)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+PREDEFINED_AUDIO_FOLDER = 'predefined_audio'
+DYNAMIC_AUDIO_FOLDER = 'dynamic_audio'
 
 
 # Application definition

@@ -34,10 +34,12 @@ def announcement(request, subcategory_id):
                 message = message.replace(placeholder, value)
                 message_ru = message_ru.replace(placeholder, value)
                 message_kg = message_kg.replace(placeholder, value)
+                request.session[f'placeholder_{key}'] = value  # Store the user input value in the session
 
             request.session['message'] = message
             request.session['message_ru'] = message_ru
             request.session['message_kg'] = message_kg
+            request.session['subcategory_id'] = subcategory_id  # Set the subcategory_id in the session
             request.session.modified = True
 
             return redirect('confirmation')

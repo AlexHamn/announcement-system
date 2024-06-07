@@ -17,6 +17,8 @@ def subcategory(request, category_id):
     subcategories = Subcategory.objects.filter(category=category)
     return render(request, 'homepage/subcategory.html', {'category': category, 'subcategories': subcategories})
 
+# homepage/views.py
+
 def announcement(request, subcategory_id):
     subcategory = Subcategory.objects.get(id=subcategory_id)
     placeholder_pattern = re.compile(r'\[.*?\]')
@@ -29,15 +31,19 @@ def announcement(request, subcategory_id):
             message_ru = subcategory.template_ru
             message_kg = subcategory.template_kg
 
+            placeholders = {}
             for key, value in form.cleaned_data.items():
                 placeholder = f'[{key}]'
                 message = message.replace(placeholder, value)
                 message_ru = message_ru.replace(placeholder, value)
                 message_kg = message_kg.replace(placeholder, value)
+                placeholders[key] = value  # Store the user input value in the placeholders dictionary
 
+            request.session['placeholders'] = placeholders  # Store the placeholders dictionary in the session
             request.session['message'] = message
             request.session['message_ru'] = message_ru
             request.session['message_kg'] = message_kg
+            request.session['subcategory_id'] = subcategory_id
             request.session.modified = True
 
             return redirect('confirmation')

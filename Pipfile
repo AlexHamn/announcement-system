@@ -9,6 +9,9 @@ transformers = "*"
 torch = "*"
 scipy = "*"
 num2words = "*"
+pydub = "*"
+ffmpeg = "*"
+ffmpeg-python = "*"
 
 [dev-packages]
 

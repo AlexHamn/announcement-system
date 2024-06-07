@@ -20,11 +20,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from tts import views as tts_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('homepage.urls')),
     path('tts/', include('tts.urls')),
+    path('generate-audio/', tts_views.generate_announcement_audio, name='generate_audio'),
 ]
 
 if settings.DEBUG:

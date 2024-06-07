@@ -7,8 +7,6 @@ from homepage.models import Subcategory
 import logging
 import os
 
-# tts/views.py
-
 def generate_announcement_audio(request):
     subcategory_id = request.session.get('subcategory_id')
     subcategory = Subcategory.objects.get(id=subcategory_id)
@@ -20,12 +18,19 @@ def generate_announcement_audio(request):
     dynamic_audio_files = []
     for placeholder, value in placeholders.items():
         for lang in ['eng', 'rus', 'kir']:
-            logging.info(f"Generating audio for placeholder: {placeholder}, value: {value}, language: {lang}")
-            dynamic_audio_file = generate_audio(value, lang, is_predefined=False)
-            if dynamic_audio_file:
-                dynamic_audio_files.append(dynamic_audio_file)
-                logging.info(f"Generated dynamic audio file: {dynamic_audio_file}")
-                logging.info(f"Dynamic audio file path: {os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER, dynamic_audio_file)}")
+            audio_file_name = f"{value}_{lang}.wav"
+            audio_file_path = os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER, audio_file_name)
+
+            if os.path.exists(audio_file_path):
+                logging.info(f"Dynamic audio file already exists: {audio_file_name}")
+                dynamic_audio_files.append(audio_file_name)
+            else:
+                logging.info(f"Generating audio for placeholder: {placeholder}, value: {value}, language: {lang}")
+                dynamic_audio_file = generate_audio(value, lang, is_predefined=False)
+                if dynamic_audio_file:
+                    dynamic_audio_files.append(dynamic_audio_file)
+                    logging.info(f"Generated dynamic audio file: {dynamic_audio_file}")
+                    logging.info(f"Dynamic audio file path: {os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER, dynamic_audio_file)}")
 
     combined_audio_files = []
     for lang, template in [('eng', subcategory.template), ('rus', subcategory.template_ru), ('kir', subcategory.template_kg)]:

@@ -17,7 +17,7 @@ The Airport Announcement System is a Django web application that allows users to
 
 - User-friendly web interface for selecting announcement categories and subcategories
 - Predefined announcement templates with placeholders for customization
-- Support for multiple languages (English, Russian, Kyrgyz)
+- Support for multiple languages (English, Russian, Chinese)
 - Generation of audio announcements using a TTS system
 - Admin interface for managing categories, subcategories, and announcement templates
 - Automatic conversion of numbers to words in the selected language

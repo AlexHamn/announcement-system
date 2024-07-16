@@ -24,14 +24,17 @@ if ffmpeg_path is None or ffprobe_path is None:
 os.environ['FFMPEG_PATH'] = ffmpeg_path
 os.environ['FFPROBE_PATH'] = ffprobe_path
 
-def kyrgyz_num2words(num):
-    # Kyrgyz number words
-    ones = ['', 'бир', 'эки', 'үч', 'төрт', 'беш', 'алты', 'жети', 'сегиз', 'тогуз']
-    tens = ['', 'он', 'жыйырма', 'отуз', 'кырк', 'элүү', 'алтымыш', 'жетимиш', 'сексен', 'токсон']
-    scales = ['', 'миң', 'миллион', 'миллиард', 'триллион']
-
-    if num == 0:
-        return 'ноль'
+def chinese_num2words(num):
+    # NEED RESEARCH. Doesn't cover all the cases!!!!
+    units = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九']
+    tens = ['', '十', '二十', '三十', '四十', '五十', '六十', '七十', '八十', '九十']
+    
+    if num < 10:
+        return units[num]
+    elif num < 100:
+        return tens[num // 10] + units[num % 10]
+    else:
+        return str(num)  # RESEARCHHHHH
 
     def convert_three_digits(n):
         if n == 0:
@@ -62,8 +65,8 @@ def convert_to_phonetic(text, language):
         text = re.sub(r'\d+', lambda x: num2words(int(x.group(0)), lang='en'), text)
     elif language == 'rus':
         text = re.sub(r'\d+', lambda x: num2words(int(x.group(0)), lang='ru'), text)
-    elif language == 'kir':
-        text = re.sub(r'\d+', lambda x: kyrgyz_num2words(int(x.group(0))), text)
+    elif language == 'chinese': #Will change later based on the model used
+        text = re.sub(r'\d+', lambda x: chinese_num2words(int(x.group(0))), text)
 
     # Define phonetic spellings for capital letters
     phonetic_spellings = {
@@ -81,12 +84,12 @@ def convert_to_phonetic(text, language):
             'P': 'пэ ', 'Q': 'кью ', 'R': 'ар ', 'S': 'эс ', 'T': 'тэ ',
             'U': 'ю ', 'V': 'вэ ', 'W': 'дабльвэ ', 'X': 'экс ', 'Y': 'иай ', 'Z': 'зэд '
         },
-        'kir': {
-            'A': 'а ', 'B': 'бэ ', 'C': 'цэ ', 'D': 'дэ ', 'E': 'е ',
-            'F': 'эф ', 'G': 'гэ ', 'H': 'ха ', 'I': 'и ', 'J': 'жэ ',
-            'K': 'ка ', 'L': 'эл ', 'M': 'эм ', 'N': 'эн ', 'O': 'о ',
-            'P': 'пэ ', 'Q': 'кү ', 'R': 'эр ', 'S': 'эс ', 'T': 'тэ ',
-            'U': 'ү ', 'V': 'вэ ', 'W': 'дабл вэ ', 'X': 'экс ', 'Y': 'йэ ', 'Z': 'зэд '
+        'chinese': {
+            'A': '阿 ', 'B': '贝 ', 'C': '西 ', 'D': '迪 ', 'E': '伊 ',
+            'F': '艾弗 ', 'G': '吉 ', 'H': '艾奇 ', 'I': '艾 ', 'J': '杰 ',
+            'K': '凯 ', 'L': '艾勒 ', 'M': '艾姆 ', 'N': '恩 ', 'O': '欧 ',
+            'P': '皮 ', 'Q': '吉乌 ', 'R': '阿尔 ', 'S': '艾斯 ', 'T': '提 ',
+            'U': '优 ', 'V': '维 ', 'W': '达布尔维 ', 'X': '艾克斯 ', 'Y': '维 ', 'Z': '贼德 '
         }
     }
 

@@ -29,20 +29,20 @@ def announcement(request, subcategory_id):
         if form.is_valid():
             message = subcategory.template
             message_ru = subcategory.template_ru
-            message_kg = subcategory.template_kg
+            message_chinese = subcategory.template_chinese
 
             placeholders = {}
             for key, value in form.cleaned_data.items():
                 placeholder = f'[{key}]'
                 message = message.replace(placeholder, value)
                 message_ru = message_ru.replace(placeholder, value)
-                message_kg = message_kg.replace(placeholder, value)
+                message_chinese = message_chinese.replace(placeholder, value)
                 placeholders[key] = value  # Store the user input value in the placeholders dictionary
 
             request.session['placeholders'] = placeholders  # Store the placeholders dictionary in the session
             request.session['message'] = message
             request.session['message_ru'] = message_ru
-            request.session['message_kg'] = message_kg
+            request.session['message_chinese'] = message_chinese
             request.session['subcategory_id'] = subcategory_id
             request.session.modified = True
 
@@ -56,11 +56,11 @@ def announcement(request, subcategory_id):
 def confirmation(request):
     message = request.session.get('message', '')
     message_ru = request.session.get('message_ru', '')
-    message_kg = request.session.get('message_kg', '')
+    message_chinese = request.session.get('message_chinese', '')
     
     if request.method == 'POST':
         if 'confirm' in request.POST:
             return redirect('generate_audio')
         return redirect('index')
     
-    return render(request, 'homepage/confirmation.html', {'message': message, 'message_ru': message_ru, 'message_kg': message_kg})
+    return render(request, 'homepage/confirmation.html', {'message': message, 'message_ru': message_ru, 'message_chinese': message_chinese})

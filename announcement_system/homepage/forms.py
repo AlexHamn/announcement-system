@@ -33,4 +33,4 @@ class SubcategoryForm(forms.ModelForm):
 
     class Meta:
         model = Subcategory
-        fields = ['category', 'name', 'template', 'template_ru', 'template_kg', 'predefined_parts']
+        fields = ['category', 'name', 'template', 'template_ru', 'template_chinese', 'predefined_parts']

@@ -22,7 +22,7 @@ class Subcategory(models.Model):
     name = models.CharField(max_length=100)
     template = models.TextField()
     template_ru = models.TextField()
-    template_kg = models.TextField()
+    template_chinese = models.TextField() 
     predefined_audio_files = models.JSONField(default=list, blank=True)  # Make the field optional
 
     def __str__(self):
@@ -39,7 +39,7 @@ class Subcategory(models.Model):
     def generate_predefined_audio_files(self):
         predefined_audio_files = []
 
-        for lang, template in [('eng', self.template), ('rus', self.template_ru), ('kir', self.template_kg)]:
+        for lang, template in [('eng', self.template), ('rus', self.template_ru), ('kir', self.template_chinese)]:
             parts = re.split(r'(\[[^\]]+\])', template)
             for part in parts:
                 if not part.startswith('[') and part.strip():

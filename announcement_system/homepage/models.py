@@ -39,7 +39,7 @@ class Subcategory(models.Model):
     def generate_predefined_audio_files(self):
         predefined_audio_files = []
 
-        for lang, template in [('eng', self.template), ('rus', self.template_ru), ('kir', self.template_chinese)]:
+        for lang, template in [('eng', self.template), ('rus', self.template_ru), ('chinese', self.template_chinese)]: #Change later
             parts = re.split(r'(\[[^\]]+\])', template)
             for part in parts:
                 if not part.startswith('[') and part.strip():

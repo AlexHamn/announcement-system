@@ -33,7 +33,7 @@ def generate_announcement_audio(request):
                     logging.info(f"Dynamic audio file path: {os.path.join(settings.MEDIA_ROOT, settings.DYNAMIC_AUDIO_FOLDER, dynamic_audio_file)}")
 
     combined_audio_files = []
-    for lang, template in [('eng', subcategory.template), ('rus', subcategory.template_ru), ('kir', subcategory.template_kg)]:
+    for lang, template in [('eng', subcategory.template), ('rus', subcategory.template_ru), ('chinese', subcategory.template_chinese)]:
         predefined_files = [file for file in predefined_audio_files if file.endswith(f'_{lang}.wav')]
         dynamic_files = [file for file in dynamic_audio_files if file.endswith(f'_{lang}.wav')]
         combined_audio = combine_audio_files(template, predefined_files, dynamic_files, lang, placeholders)
